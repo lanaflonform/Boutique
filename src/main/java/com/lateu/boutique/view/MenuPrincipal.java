@@ -4,6 +4,7 @@
  */
 package com.lateu.boutique.view;
 
+import com.douwe.generic.dao.DataAccessException;
 import com.lateu.boutique.view.admin.FournisseurPanel;
 import com.lateu.boutique.view.admin.PersonnelPanel;
 import com.lateu.boutique.view.admin.ProduitPanel;
@@ -118,7 +119,11 @@ public class MenuPrincipal extends JPanel {
         produit.setText("Produits");
         produit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                 setContenu(new ProduitPanel(MenuPrincipal.this));
+                try {
+                    setContenu(new ProduitPanel(MenuPrincipal.this));
+                } catch (DataAccessException ex) {
+                    Logger.getLogger(MenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         produit.setUnclickedColor(Color.blue);
@@ -131,8 +136,11 @@ public class MenuPrincipal extends JPanel {
         fournisseur.setText("Fournisseur");
         fournisseur.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                
-                 setContenu(new FournisseurPanel(MenuPrincipal.this));
+                try {
+                    setContenu(new FournisseurPanel(MenuPrincipal.this));
+                } catch (DataAccessException ex) {
+                    Logger.getLogger(MenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+                }
      
             }
         });
@@ -153,7 +161,11 @@ public class MenuPrincipal extends JPanel {
         personnel.setText("Personnel");
         personnel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-              setContenu(new PersonnelPanel(MenuPrincipal.this));
+                try {
+                    setContenu(new PersonnelPanel(MenuPrincipal.this));
+                } catch (DataAccessException ex) {
+                    Logger.getLogger(MenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         personnel.setUnclickedColor(Color.blue);

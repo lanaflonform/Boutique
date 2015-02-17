@@ -4,6 +4,7 @@
  */
 package com.lateu.boutique.view.admin;
 
+import com.douwe.generic.dao.DataAccessException;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 import com.lateu.boutique.entities.Fournisseur;
@@ -12,13 +13,16 @@ import com.lateu.boutique.entities.UserRole;
 import com.lateu.boutique.entities.UserType;
 import com.lateu.boutique.metier.Impl.IsPersonnelImpl;
 import com.lateu.boutique.metier.IsPersonnel;
+import com.lateu.boutique.metier.ServiceException;
 import com.lateu.boutique.view.MenuPrincipal;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -49,13 +53,14 @@ public class NouveauPersonnelPannel extends JPanel {
     private Long id = -1L;
     private String currentPassword;
     private Personnel p = new Personnel();
-    private Personnel p2 = new Personnel();
+   // private Personnel p2 = new Personnel();
     private Personnel p3 = new Personnel();
     private UserRole userRole = new UserRole();
-    IsPersonnel servIsPersonnel = new IsPersonnelImpl();
-
-    public NouveauPersonnelPannel(MenuPrincipal parentFrame, Long fournisseur_id) {
+    IsPersonnel servIsPersonnel ;
+ List <Personnel>  listeUsername=new ArrayList<Personnel>();
+    public NouveauPersonnelPannel(MenuPrincipal parentFrame, Long fournisseur_id) throws DataAccessException {
         this(parentFrame);
+        servIsPersonnel = new IsPersonnelImpl();
         this.id = fournisseur_id;
 
         if (this.id > 0) {
@@ -74,9 +79,9 @@ public class NouveauPersonnelPannel extends JPanel {
         //  System.out.println("selected -----" + p.toString());
     }
 
-    public NouveauPersonnelPannel(MenuPrincipal parentFrame) {
-
+    public NouveauPersonnelPannel(MenuPrincipal parentFrame) throws DataAccessException {
         this.parent = parentFrame;
+         servIsPersonnel = new IsPersonnelImpl();
         setLayout(new BorderLayout(10, 10));
 
         JPanel haut = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -133,13 +138,13 @@ public class NouveauPersonnelPannel extends JPanel {
                     String prenom = prenomText.getText();
                     String contact = contactText.getText();
                     String username = usernameText.getText();
-                    String password = new String(username);
+                    String password = username;
                     UserType type = (UserType) TypeText.getSelectedItem();
-                    p2 = servIsPersonnel.TestUsername(username);
-                    if (p2 == null) {
+                    listeUsername = servIsPersonnel.TestUsername(username);
+                    if (!listeUsername.isEmpty()) {
                         JOptionPane.showMessageDialog(null, "le login " + username + "  n'est pas disponible");
                         return;
-                    }
+                   }
 
                     if ((nom == null) || ("".equals(nom))) {
                         JOptionPane.showMessageDialog(null, "Le nom du personnel n'est pas specifie");
@@ -162,15 +167,21 @@ public class NouveauPersonnelPannel extends JPanel {
                     p.setEtatCompte(1);
 
                     userRole.setAutorié(type.toString());
-                    System.out.println("=====" + servIsPersonnel.Save(p, userRole));
+                    try {
+                         System.out.println("=============================================================");
+                        System.out.println("==22===" + servIsPersonnel.Save(p, userRole));
+                    } catch (ServiceException ex) {
+                        Logger.getLogger(NouveauPersonnelPannel.class.getName()).log(Level.SEVERE, null, ex);
+                    }
 
 
 
                 }
-
-
-
-                parent.setContenu(new PersonnelPanel(parent));
+                try {
+                    parent.setContenu(new PersonnelPanel(parent));
+                } catch (DataAccessException ex) {
+                    Logger.getLogger(NouveauPersonnelPannel.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
             }
         });

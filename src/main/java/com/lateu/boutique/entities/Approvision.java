@@ -6,21 +6,35 @@ package com.lateu.boutique.entities;
 
 import java.io.Serializable;
 import java.util.Date;
-
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
 
 /**
  *
  * @author lateu
  */
-
+@Entity
 public class Approvision implements Serializable {
-   
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String codeApprovision;   
-    private Date dateFabrication; 
-    private Date datePeremption; 
+    private String codeApprovision;
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date dateFabrication;
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date datePeremption;
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date dateJour;
     private int quantite;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false)
     private Produit produit;
 
     public Approvision() {

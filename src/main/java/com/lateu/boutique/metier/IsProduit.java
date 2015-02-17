@@ -15,6 +15,6 @@ import java.util.List;
 public interface IsProduit {
      public List<Produit> findAll();
 
-      
+      public void save(Produit p, String nomFoun);
     
 }

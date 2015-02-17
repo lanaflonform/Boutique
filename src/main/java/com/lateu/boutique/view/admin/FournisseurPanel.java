@@ -4,6 +4,7 @@
  */
 package com.lateu.boutique.view.admin;
 
+import com.douwe.generic.dao.DataAccessException;
 import com.lateu.boutique.entities.Fournisseur;
 import com.lateu.boutique.metier.Impl.IsFournisseurImpl;
 import com.lateu.boutique.metier.IsFournisseur;
@@ -43,10 +44,10 @@ public class FournisseurPanel extends JPanel {
     private MenuPrincipal parent;
     private IsFournisseur serFournisseur;
 
-    public FournisseurPanel(MenuPrincipal parentFrame) {
+    public FournisseurPanel(MenuPrincipal parentFrame) throws DataAccessException {
         serFournisseur=new IsFournisseurImpl();
         List<Fournisseur> lfours=new ArrayList<Fournisseur>();
-    try {
+//    try {
             setLayout(new BorderLayout());
             this.parent = parentFrame;
             JPanel haut = new JPanel();
@@ -113,7 +114,11 @@ public class FournisseurPanel extends JPanel {
             });
             nouveauBtn.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
-                    parent.setContenu(new NouveauFournisseurPannel(parent));
+                    try {
+                        parent.setContenu(new NouveauFournisseurPannel(parent));
+                    } catch (DataAccessException ex) {
+                        Logger.getLogger(FournisseurPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                  
                 }
             });
@@ -122,7 +127,11 @@ public class FournisseurPanel extends JPanel {
                  
                     int selected=fournisseurTable.getSelectedRow();
                    if (selected >= 0) {
-                        parent.setContenu(new NouveauFournisseurPannel(parent, (Long) tableModel.getValueAt(selected, 0)));
+                        try {
+                            parent.setContenu(new NouveauFournisseurPannel(parent, (Long) tableModel.getValueAt(selected, 0)));
+                        } catch (DataAccessException ex) {
+                            Logger.getLogger(FournisseurPanel.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     } else {
                         JOptionPane.showMessageDialog(null, "Aucun fournisseur n'est selectionné");
                     }
@@ -183,18 +192,10 @@ public class FournisseurPanel extends JPanel {
         }
 
 //
-//            liste = customerService.findByStatus(0);
-//
-//            for (Customer c : liste) {
-//                tableModel.addRow(new Object[]{c.getId(),
-//                    c.getName(),
-//                    c.getEmailAdress(),
-//                    c.getPhoneNumber()
-//                });
-//            }
-        } catch (Exception ex) {
-            Logger.getLogger(FournisseurPanel.class.getName()).log(Level.SEVERE, null, ex);
-        }
 
-    }
+//        } catch (Exception ex) {
+//            Logger.getLogger(FournisseurPanel.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+
+   }
 }

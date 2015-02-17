@@ -4,23 +4,23 @@
  */
 package com.lateu.boutique.view.admin;
 
+import com.douwe.generic.dao.DataAccessException;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 import com.lateu.boutique.entities.Fournisseur;
-import com.lateu.boutique.entities.Personnel;
 import com.lateu.boutique.entities.ProductType;
 import com.lateu.boutique.entities.Produit;
-import com.lateu.boutique.entities.UserRole;
-import com.lateu.boutique.entities.UserType;
-import com.lateu.boutique.metier.Impl.IsPersonnelImpl;
-import com.lateu.boutique.metier.IsPersonnel;
+import com.lateu.boutique.metier.Impl.IsFournisseurImpl;
+import com.lateu.boutique.metier.Impl.IsProduitImpl;
+import com.lateu.boutique.metier.IsFournisseur;
+import com.lateu.boutique.metier.IsProduit;
 import com.lateu.boutique.view.MenuPrincipal;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -45,6 +45,7 @@ public class NouveauProduitPanel extends JPanel {
     private JTextField usernameText;
     private JPasswordField passwordText;
     private JComboBox<ProductType> TypeText;
+    private JComboBox<String> fourJComboBox;
     private JXDatePicker datenais;
     private JButton btnEnregistrer;
     private MenuPrincipal parent;
@@ -53,21 +54,23 @@ public class NouveauProduitPanel extends JPanel {
     private Produit p = new Produit();
     private Produit p2 = new Produit();
     private Produit p3 = new Produit();
-    private UserRole userRole = new UserRole();
-    IsPersonnel servIsPersonnel = new IsPersonnelImpl();
+    IsProduit servIsProduit;
+    IsFournisseur servFournisseur;
 
-    public NouveauProduitPanel(MenuPrincipal parentFrame, Long fournisseur_id) {
+    public NouveauProduitPanel(MenuPrincipal parentFrame, Long fournisseur_id) throws DataAccessException {
         this(parentFrame);
+        servIsProduit = new IsProduitImpl();
+        servFournisseur = new IsFournisseurImpl();
         this.id = fournisseur_id;
 
         if (this.id > 0) {
             btnEnregistrer.setText("Modifier");
-           // p = servIsPersonnel.findPersonnelByID(id);
+            // p = servIsPersonnel.findPersonnelByID(id);
             if (p != null) {
                 designationText.setText(p.getDesignation());
-               // contactText.setText(p.getContact());
+                // contactText.setText(p.getContact());
                 //usernameText.setText(p.getUsername());
-               // passwordText.setText(p.getPassword());
+                // passwordText.setText(p.getPassword());
                 codeText.setText(p.getCode());
 
             }
@@ -76,9 +79,11 @@ public class NouveauProduitPanel extends JPanel {
         //  System.out.println("selected -----" + p.toString());
     }
 
-    public NouveauProduitPanel(MenuPrincipal parentFrame) {
+    public NouveauProduitPanel(MenuPrincipal parentFrame) throws DataAccessException {
 
         this.parent = parentFrame;
+        servFournisseur = new IsFournisseurImpl();
+        servIsProduit = new IsProduitImpl();
         setLayout(new BorderLayout(10, 10));
 
         JPanel haut = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -91,12 +96,26 @@ public class NouveauProduitPanel extends JPanel {
         builder.append("code", codeText = new JTextField());
         builder.append("PU", puText = new JTextField());
         builder.append("Seuil", seuilText = new JTextField());
-       // builder.append("contact", contactText = new JTextField());
-       // builder.append("username", usernameText = new JTextField());
+        // builder.append("contact", contactText = new JTextField());
+        builder.append("fournisseur", fourJComboBox = new JComboBox<String>());
         builder.append("Type", TypeText = new JComboBox<ProductType>());
-       // builder.append("dateNaiss", datenais = new JXDatePicker());
         TypeText.addItem(ProductType.Alimentaire);
         TypeText.addItem(ProductType.Electronique);
+
+        fourJComboBox.addItem("");
+        List<Fournisseur> liste = servFournisseur.findAll();
+        System.out.println("----------------fournisseur courants------" + liste.size());
+        if (!liste.isEmpty()) {
+            for (Fournisseur c : liste) {
+                if (c != null) {
+                    fourJComboBox.addItem(c.getNom());
+
+                }
+            }
+
+        }
+
+
         builder.append(btnEnregistrer = new JButton("Enrégistrer"));
         add(BorderLayout.CENTER, builder.getPanel());
 
@@ -114,12 +133,12 @@ public class NouveauProduitPanel extends JPanel {
                         System.out.println("===je suis de passage ici====");
                         p3.setCode(codeText.getText());
                         p3.setDesignation(designationText.getText());
-                       // p3.setPU(WIDTH);
+                        // p3.setPU(WIDTH);
                         p3.setType(TypeText.toString());
                         p3.setId(id);
-                       // p3.setEtatCompte(e);
-                        
-                       // p3=servIsPersonnel.updatePersonnel(p3);
+
+
+                        // p3=servIsPersonnel.updatePersonnel(p3);
 
 
 
@@ -135,15 +154,18 @@ public class NouveauProduitPanel extends JPanel {
                     String designation = designationText.getText();
                     String code = codeText.getText();
                     String pu = puText.getText();
-                
-             
+                    String seuil = seuilText.getText();
+
                     ProductType type = (ProductType) TypeText.getSelectedItem();
-                    String typeProd=type.toString();
-               
-//                    if (p2 == null) {
-//                        JOptionPane.showMessageDialog(null, "le login " + username + "  n'est pas disponible");
-//                        return;
-//                    }
+                    String typeProd = type.toString();
+
+
+                    String nomFourn = (String) fourJComboBox.getSelectedItem();
+                    if ("".equalsIgnoreCase(nomFourn)) {
+                        JOptionPane.showMessageDialog(null, "le fournisseur est obligatoire");
+                        return;
+                    }
+
 
                     if ((designation == null) || ("".equals(designation))) {
                         JOptionPane.showMessageDialog(null, "Le nom du produit n'est pas specifie");
@@ -160,19 +182,24 @@ public class NouveauProduitPanel extends JPanel {
 
                     p.setCode(code);
                     p.setDesignation(designation);
-                    //p.setPU(WIDTH);
+                    Integer prixU = Integer.getInteger(pu);
+                    Integer s = Integer.getInteger(seuil);
+                   // p.setSeuil(s.intValue());
+                   // p.setPU(prixU.intValue());
                     p.setType(typeProd);
-                   
-                    userRole.setAutorié(type.toString());
-                //    System.out.println("=====" + servIsPersonnel.Save(p, userRole));
+
+                    System.out.println("----------------avant ajout du produit------"+pu+"--------"+s);
+                    servIsProduit.save(p, nomFourn);
 
 
 
                 }
+                try {
+                    parent.setContenu(new ProduitPanel(parent));
+                } catch (DataAccessException ex) {
+                    Logger.getLogger(NouveauProduitPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
-
-
-                parent.setContenu(new ProduitPanel(parent));
 
             }
         });

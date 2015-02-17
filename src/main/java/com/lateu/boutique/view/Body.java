@@ -4,8 +4,8 @@
  */
 package com.lateu.boutique.view;
 
+import com.douwe.generic.dao.DataAccessException;
 import java.awt.BorderLayout;
-import java.sql.Connection;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -18,7 +18,7 @@ public class Body extends JFrame {
     private Banniere headerPanel;
     private JPanel contentPanel;
 
-    public Body() {
+    public Body() throws DataAccessException {
 
 
         setTitle("j4U");
@@ -26,17 +26,17 @@ public class Body extends JFrame {
         headerPanel = new Banniere() {
             @Override
             public void deconnexion() {
-                Connection conn;
+             
                 contentPanel.removeAll();
-                contentPanel.add(BorderLayout.CENTER, new LoginPanel() {
-                    @Override
-                    public void success() {
-                        contentPanel.removeAll();
-                        contentPanel.add(BorderLayout.CENTER, new MenuPrincipal());
-                        contentPanel.validate();
-                        headerPanel.setEnabledHeader(true);
-                    }
-                });
+//                contentPanel.add(BorderLayout.CENTER, new LoginPanel() {
+//                    @Override
+//                    public void success() {
+//                        contentPanel.removeAll();
+//                        contentPanel.add(BorderLayout.CENTER, new MenuPrincipal());
+//                        contentPanel.validate();
+//                        headerPanel.setEnabledHeader(true);
+//                    }
+//                });
 
                 
                 contentPanel.validate();
@@ -45,7 +45,7 @@ public class Body extends JFrame {
         getContentPane().add(headerPanel, BorderLayout.BEFORE_FIRST_LINE);
         contentPanel = new JPanel();
         contentPanel.setLayout(new BorderLayout());
-        JPanel login = new LoginPanel() {
+        JPanel login = new LoginPanel(){
             @Override
             public void success() {
                 contentPanel.removeAll();

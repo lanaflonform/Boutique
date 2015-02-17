@@ -5,14 +5,34 @@
 package com.lateu.boutique.entities;
 
 import java.io.Serializable;
-;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 /**
  *
  * @author lateu
  */
-
+@Entity
+@NamedQueries({
+    @NamedQuery(name = "clear", query = "delete  from Pannier  "),
+      @NamedQuery(name = "findCurrentPannier", query = "select p from Pannier p where p.veroux=1"),
+          @NamedQuery(name = "NoneSave", query = "select p from Pannier p where p.veroux=0"),
+   })
 public class Pannier implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false)
     private Produit produit;
     private String designation;
     private int PU;
@@ -81,7 +101,20 @@ public class Pannier implements Serializable {
     public Pannier() {
     }
 
-   
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "Pannier{" + "id=" + id + ", designation=" + designation + ", PU=" + PU + ", quantite=" + quantite + ", PT=" + PT + '}';
+    }
+    
+    
     
     
 }

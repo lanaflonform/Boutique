@@ -6,13 +6,16 @@ package com.lateu.boutique.dao;
 
 import com.douwe.generic.dao.DataAccessException;
 import com.douwe.generic.dao.IDao;
-import com.lateu.boutique.entities.Fournisseur;
+import com.lateu.boutique.entities.Stock;
+
 
 /**
  *
  * @author lateu
  */
-public interface Fournisseurdao extends IDao<Fournisseur, Long> {
-    public Fournisseur findbyNom(String nom)throws DataAccessException;
+public interface Stockdao extends IDao<Stock, Long>{
+    
+    public Stock findbyCodeStock(String c)throws DataAccessException;
+    public Stock findMonStock(Long idProd)throws DataAccessException;
     
 }

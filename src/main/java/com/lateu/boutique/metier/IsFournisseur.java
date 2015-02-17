@@ -4,6 +4,7 @@
  */
 package com.lateu.boutique.metier;
 
+import com.douwe.generic.dao.DataAccessException;
 import com.lateu.boutique.entities.Fournisseur;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface IsFournisseur {
 
     List<Fournisseur> findAll();
 
-    Fournisseur savefoun(Fournisseur j);
+    Fournisseur Ajouter(Fournisseur j)throws DataAccessException;
 
     Fournisseur findById(Long j);
 

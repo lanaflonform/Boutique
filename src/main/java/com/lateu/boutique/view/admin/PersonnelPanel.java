@@ -4,6 +4,7 @@
  */
 package com.lateu.boutique.view.admin;
 
+import com.douwe.generic.dao.DataAccessException;
 import com.lateu.boutique.entities.Personnel;
 import com.lateu.boutique.entities.UserType;
 import com.lateu.boutique.metier.Impl.IsPersonnelImpl;
@@ -44,11 +45,12 @@ public class PersonnelPanel extends JPanel {
     private JTextField nameText;
     private MenuPrincipal parent;
     private Personnel p = new Personnel();
-    private IsPersonnel serIsPersonnel = new IsPersonnelImpl();
+    private IsPersonnel serIsPersonnel;
     private List<Personnel> liste = new ArrayList<Personnel>();
      private JComboBox<UserType>  role;
 
-    public PersonnelPanel(MenuPrincipal parentFrame) {
+    public PersonnelPanel(MenuPrincipal parentFrame) throws DataAccessException {
+        serIsPersonnel = new IsPersonnelImpl();
 //        customerService = new ICustomerServiceImpl();
 //        customer = new Customer();
 //        operationService = new IOperationServiceImpl();
@@ -118,14 +120,22 @@ public class PersonnelPanel extends JPanel {
             });
             nouveauBtn.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
-                    parent.setContenu(new NouveauPersonnelPannel(parent));
+                    try {
+                        parent.setContenu(new NouveauPersonnelPannel(parent));
+                    } catch (DataAccessException ex) {
+                        Logger.getLogger(PersonnelPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             });
             modifierBtn.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
                     int selected = clientTable.getSelectedRow();
                     if (selected >= 0) {
-                        parent.setContenu(new NouveauPersonnelPannel(parent, (Long) tableModel.getValueAt(selected, 0)));
+                        try {
+                            parent.setContenu(new NouveauPersonnelPannel(parent, (Long) tableModel.getValueAt(selected, 0)));
+                        } catch (DataAccessException ex) {
+                            Logger.getLogger(PersonnelPanel.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     } else {
                         JOptionPane.showMessageDialog(null, "Aucun Personnel n'est selectionné");
                     }
@@ -174,8 +184,6 @@ public class PersonnelPanel extends JPanel {
 
 
             liste = serIsPersonnel.findAll();
-
-            System.out.println("=========length" + liste);
             for (Personnel pe : liste) {
                 tableModel.addRow(new Object[]{
                     pe.getId(),

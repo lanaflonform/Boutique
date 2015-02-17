@@ -4,6 +4,7 @@
  */
 package com.lateu.boutique.view.admin;
 
+import com.douwe.generic.dao.DataAccessException;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 import com.lateu.boutique.entities.Fournisseur;
@@ -36,9 +37,11 @@ public class NouveauFournisseurPannel extends JPanel{
     private MenuPrincipal parent;
     private Long id = -1L;
     private Fournisseur f=new Fournisseur();
-    private IsFournisseur serviceFournisseur=new IsFournisseurImpl();
-    public NouveauFournisseurPannel(MenuPrincipal parentFrame, Long fournisseur_id) {
+    private IsFournisseur serviceFournisseur; 
+    public NouveauFournisseurPannel(MenuPrincipal parentFrame, Long fournisseur_id) throws DataAccessException {
         this(parentFrame);
+        serviceFournisseur=new IsFournisseurImpl(); 
+       
         this.id = fournisseur_id;
         
          if (this.id > 0) {
@@ -59,9 +62,10 @@ public class NouveauFournisseurPannel extends JPanel{
     
     
     
-    public NouveauFournisseurPannel(MenuPrincipal parentFrame) {
+    public NouveauFournisseurPannel(MenuPrincipal parentFrame) throws DataAccessException {
         
          this.parent = parentFrame; 
+         serviceFournisseur=new IsFournisseurImpl(); 
         setLayout(new BorderLayout(10, 10));
         
         JPanel haut = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -94,18 +98,10 @@ public class NouveauFournisseurPannel extends JPanel{
                         f.setContact(contactText.getText());
                         f.setId(id);
                         f=serviceFournisseur.update(f);
-                        //id=-1L;
-                        f=null;
+                   
+                     //   f=null;
                         
-                        
-//                        conn =dBAccess.getConnexion();
-//                        PreparedStatement pst = conn.prepareStatement("update account set type=? , accountNumber=? where id =?");
-//                        pst.setInt(1, type.ordinal());
-//                        pst.setString(2, number);
-//                        pst.setInt(3, id);
-//                        pst.executeUpdate();
-//                        pst.close();
-//                        conn.close();
+           
                        
                         parent.setContenu(new FournisseurPanel(parent));
                     } catch (Exception ex) {
@@ -114,7 +110,7 @@ public class NouveauFournisseurPannel extends JPanel{
                     }
 
                 } else {
-                   
+                    try {                   
                         // I need to get the customer_id
                         String nom = nomText.getText();
                         String contact= contactText.getText();
@@ -137,13 +133,20 @@ public class NouveauFournisseurPannel extends JPanel{
                          f.setNom(nom);
                          f.setVille(ville);
                          
-                        System.out.println("++++"+ serviceFournisseur.savefoun(f));
+                          System.out.println(f);
+                         
+                       System.out.println("++++"+ serviceFournisseur.Ajouter(f));
+                
+                    } catch (DataAccessException ex) {
+                        Logger.getLogger(NouveauFournisseurPannel.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                        
                         }
-                
-               
-
-                        parent.setContenu(new FournisseurPanel(parent));
+                try {
+                    parent.setContenu(new FournisseurPanel(parent));
+                } catch (DataAccessException ex) {
+                    Logger.getLogger(NouveauFournisseurPannel.class.getName()).log(Level.SEVERE, null, ex);
+                }
                   
                 }
 

@@ -4,6 +4,7 @@
  */
 package com.lateu.boutique.view.admin;
 
+import com.douwe.generic.dao.DataAccessException;
 import com.lateu.boutique.entities.Personnel;
 import com.lateu.boutique.entities.Produit;
 import com.lateu.boutique.metier.Impl.IsProduitImpl;
@@ -43,9 +44,9 @@ public class ProduitPanel extends JPanel{
     private MenuPrincipal parent;
     private JTextField nameText;
     private List<Produit> liste = new ArrayList<Produit>();
-    private IsProduit servproduit=new IsProduitImpl();
-    public ProduitPanel(MenuPrincipal parentFrame) {
-        
+    private IsProduit servproduit;
+    public ProduitPanel(MenuPrincipal parentFrame) throws DataAccessException {
+        servproduit=new IsProduitImpl();
  //        customerService = new ICustomerServiceImpl();
 //        customer = new Customer();
 //        operationService = new IOperationServiceImpl();
@@ -115,14 +116,22 @@ public class ProduitPanel extends JPanel{
             });
             nouveauBtn.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
-                    parent.setContenu(new NouveauProduitPanel(parent));
+                    try {
+                        parent.setContenu(new NouveauProduitPanel(parent));
+                    } catch (DataAccessException ex) {
+                        Logger.getLogger(ProduitPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             });
             modifierBtn.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
                     int selected = clientTable.getSelectedRow();
                     if (selected >= 0) {
-                        parent.setContenu(new NouveauProduitPanel(parent, (Long) tableModel.getValueAt(selected, 0)));
+                        try {
+                            parent.setContenu(new NouveauProduitPanel(parent, (Long) tableModel.getValueAt(selected, 0)));
+                        } catch (DataAccessException ex) {
+                            Logger.getLogger(ProduitPanel.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     } else {
                         JOptionPane.showMessageDialog(null, "Aucun Personnel n'est selectionné");
                     }
@@ -171,8 +180,6 @@ public class ProduitPanel extends JPanel{
 
 
             liste = servproduit.findAll();
-
-            System.out.println("=========length" + liste);
             for (Produit p : liste) {
                 tableModel.addRow(new Object[]{
                     p.getId(),

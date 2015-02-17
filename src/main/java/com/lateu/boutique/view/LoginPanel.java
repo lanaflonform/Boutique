@@ -4,6 +4,7 @@
  */
 package com.lateu.boutique.view;
 
+import com.douwe.generic.dao.DataAccessException;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 import com.lateu.boutique.metier.Impl.IsPersonnelImpl;
@@ -41,7 +42,7 @@ public class LoginPanel extends JPanel {
     // private DBAccess dBAccess = new DBAccess();
     private IsPersonnel sPersonnel;
 
-    public LoginPanel() {
+    public LoginPanel() throws DataAccessException {
         sPersonnel = new IsPersonnelImpl();
         setLayout(new BorderLayout(10, 10));
         setBorder(new EmptyBorder(80, 350, 80, 300));

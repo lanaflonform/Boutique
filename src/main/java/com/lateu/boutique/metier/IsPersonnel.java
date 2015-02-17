@@ -14,14 +14,14 @@ import java.util.List;
  */
 public interface IsPersonnel {
 
-    public String Login(String login, String password);
+    public String Login(String login, String password) throws ServiceException;
 
-    public Personnel Save(Personnel p, UserRole role);
-
+   public Personnel Save(Personnel p, UserRole role)throws ServiceException;
     public List<Personnel> findAll();
 
     public Personnel findPersonnelByID(Long id);
 
     public Personnel updatePersonnel(Personnel f);
-    public Personnel TestUsername(String username);
+
+    public List <Personnel>  TestUsername(String username);
 }

@@ -7,24 +7,48 @@ package com.lateu.boutique.entities;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
 
 /**
  *
  * @author lateu
  */
+@Entity
+@NamedQueries({
+    @NamedQuery(name = "findPersonnelByName", query = "select p from Personnel p where p.nom=:nom"),
+    @NamedQuery(name = "findRole", query = "select r from Personnel p,UserRole r where (p.username=:username)AND(p.id=r.personnel.id)"),
+    @NamedQuery(name = "login", query = "select r from Personnel p,UserRole r where (p.username=:username)AND(p.password=:password)AND(p.id=r.personnel.id)"),
+     @NamedQuery(name = "TestUserName", query = "select p from Personnel p where p.username=:username"),
+   
 
+})
 public class Personnel implements Serializable {
 
-   
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-  
+    @OneToMany(mappedBy = "personnel", cascade = {CascadeType.ALL})
+    private List<Produit> produit;
+    @OneToMany(mappedBy = "personnel", cascade = {CascadeType.ALL})
+    private List<UserRole> userRoles;
     private String nom;
     private String prenom;
-   
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date dateNais;
-    private String contact; 
+    private String contact;
+     @Column(unique = true, nullable = false)
     private String username;
+    @Column(unique = true, nullable = false)
     private String password;
     private int etatCompte;
 
@@ -41,7 +65,13 @@ public class Personnel implements Serializable {
         this.etatCompte = etatCompte;
     }
 
-   
+    public List<UserRole> getUserRoles() {
+        return userRoles;
+    }
+
+    public void setUserRoles(List<UserRole> userRoles) {
+        this.userRoles = userRoles;
+    }
 
     public String getUsername() {
         return username;
@@ -65,6 +95,15 @@ public class Personnel implements Serializable {
 
     public void setEtatCompte(int etatCompte) {
         this.etatCompte = etatCompte;
+    }
+
+  
+    public List<Produit> getProduit() {
+        return produit;
+    }
+
+    public void setProduit(List<Produit> produit) {
+        this.produit = produit;
     }
 
     public String getPrenom() {
@@ -111,6 +150,8 @@ public class Personnel implements Serializable {
     public String toString() {
         return "Personnel{" + "id=" + id + ", nom=" + nom + ", prenom=" + prenom + ", dateNais=" + dateNais + ", contact=" + contact + ", username=" + username + ", password=" + password + ", etatCompte=" + etatCompte + '}';
     }
+    
+    
     
     
 }

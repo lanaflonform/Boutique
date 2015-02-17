@@ -4,17 +4,28 @@
  */
 package com.lateu.boutique.entities;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 /**
  *
  * @author lateu
  */
-
+@Entity
 public class UserRole {
-    
-    
+     private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String autorié;
+   @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false)
     private Personnel personnel;
 
   
