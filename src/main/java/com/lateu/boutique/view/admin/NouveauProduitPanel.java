@@ -65,12 +65,13 @@ public class NouveauProduitPanel extends JPanel {
 
         if (this.id > 0) {
             btnEnregistrer.setText("Modifier");
-            // p = servIsPersonnel.findPersonnelByID(id);
+             p = servIsProduit.findById(id);
             if (p != null) {
                 designationText.setText(p.getDesignation());
                 // contactText.setText(p.getContact());
-                //usernameText.setText(p.getUsername());
-                // passwordText.setText(p.getPassword());
+                //TypeText.
+                puText.setText(p.getPU()+"");
+                 seuilText.setText(p.getSeuil()+"");
                 codeText.setText(p.getCode());
 
             }
@@ -133,12 +134,13 @@ public class NouveauProduitPanel extends JPanel {
                         System.out.println("===je suis de passage ici====");
                         p3.setCode(codeText.getText());
                         p3.setDesignation(designationText.getText());
-                        // p3.setPU(WIDTH);
+                         p3.setPU(Integer.parseInt(puText.getText()));
+                          p3.setSeuil(Integer.parseInt(seuilText.getText()));
                         p3.setType(TypeText.toString());
                         p3.setId(id);
 
 
-                        // p3=servIsPersonnel.updatePersonnel(p3);
+                        servIsProduit.udpdate(p3);
 
 
 
@@ -182,13 +184,13 @@ public class NouveauProduitPanel extends JPanel {
 
                     p.setCode(code);
                     p.setDesignation(designation);
-                    Integer prixU = Integer.getInteger(pu);
-                    Integer s = Integer.getInteger(seuil);
-                   // p.setSeuil(s.intValue());
-                   // p.setPU(prixU.intValue());
+                    Integer prixU = Integer.parseInt(pu);
+                    Integer s = Integer.parseInt(seuil);
+                    p.setSeuil(s.intValue());
+                    p.setPU(prixU.intValue());
                     p.setType(typeProd);
 
-                    System.out.println("----------------avant ajout du produit------"+pu+"--------"+s);
+                    System.out.println("----------------avant ajout du produit------" + pu + "-------- aprssssss" + prixU);
                     servIsProduit.save(p, nomFourn);
 
 

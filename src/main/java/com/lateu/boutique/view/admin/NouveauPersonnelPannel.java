@@ -117,6 +117,7 @@ public class NouveauPersonnelPannel extends JPanel {
                         p3.setPrenom(prenomText.getText());
                         p3.setUsername(usernameText.getText());
                         p3.setContact(contactText.getText());
+                        
                        // p3.setPassword(currentPassword);
                         p3.setId(id);
                        // p3.setEtatCompte(e);
@@ -138,6 +139,7 @@ public class NouveauPersonnelPannel extends JPanel {
                     String prenom = prenomText.getText();
                     String contact = contactText.getText();
                     String username = usernameText.getText();
+                    p.setDateNais(datenais.getDate());
                     String password = username;
                     UserType type = (UserType) TypeText.getSelectedItem();
                     listeUsername = servIsPersonnel.TestUsername(username);

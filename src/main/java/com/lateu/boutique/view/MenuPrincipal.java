@@ -5,9 +5,12 @@
 package com.lateu.boutique.view;
 
 import com.douwe.generic.dao.DataAccessException;
+import com.lateu.boutique.view.Common.PannierPanel;
 import com.lateu.boutique.view.admin.FournisseurPanel;
 import com.lateu.boutique.view.admin.PersonnelPanel;
 import com.lateu.boutique.view.admin.ProduitPanel;
+import com.lateu.boutique.view.admin.Recette_J;
+import com.lateu.boutique.view.admin.Recette_Periodique;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -78,7 +81,7 @@ public class MenuPrincipal extends JPanel {
         pannier.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 try {
-                    //    setContenu(new TransfertPanel(MenuPrincipal.this));
+                        setContenu(new PannierPanel(MenuPrincipal.this));
                 } catch (Exception ex) {
                     Logger.getLogger(MenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -184,7 +187,12 @@ public class MenuPrincipal extends JPanel {
         recetteP.setText("Recette-P");
         recetteP.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                //  setContenu(new OperationsPanel());
+                try {
+                    setContenu(new Recette_Periodique(MenuPrincipal.this));
+                } catch (DataAccessException ex) {
+                    Logger.getLogger(MenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+                }
+               
             }
         });
         recetteP.setUnclickedColor(Color.blue);
@@ -196,7 +204,11 @@ public class MenuPrincipal extends JPanel {
          recetteJ.setText("Reccete-Journalière");
          recetteJ.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                //   setContenu(new ClientPanel(MenuPrincipal.this));
+                try {
+                    setContenu(new Recette_J(MenuPrincipal.this));
+                } catch (DataAccessException ex) {
+                    Logger.getLogger(MenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
          recetteJ.setUnclickedColor(Color.blue);
