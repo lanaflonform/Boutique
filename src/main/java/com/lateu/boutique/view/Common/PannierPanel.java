@@ -7,10 +7,7 @@ package com.lateu.boutique.view.Common;
 import com.lateu.boutique.view.admin.*;
 import com.douwe.generic.dao.DataAccessException;
 import com.lateu.boutique.entities.Pannier;
-import com.lateu.boutique.entities.Personnel;
-import com.lateu.boutique.entities.Produit;
 import com.lateu.boutique.metier.Impl.IsProduitImpl;
-import com.lateu.boutique.metier.IsPersonnel;
 import com.lateu.boutique.metier.IsProduit;
 import com.lateu.boutique.view.MenuPrincipal;
 import java.awt.BorderLayout;
@@ -19,6 +16,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -31,15 +29,16 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
-
 /**
  *
  * @author ing-lateu
  */
-public class PannierPanel extends JPanel{
- private JButton nouveauBtn;
+public class PannierPanel extends JPanel {
+
+    private JButton nouveauBtn;
     private JButton supprimerBtn;
     private JButton modifierBtn;
+    private JButton imprimerBtn;
     private JButton filtreBtn;
     private JTable clientTable;
     private DefaultTableModel tableModel;
@@ -47,8 +46,9 @@ public class PannierPanel extends JPanel{
     private JTextField nameText;
     private List<Pannier> liste = new ArrayList<Pannier>();
     private IsProduit servproduit;
+
     public PannierPanel(MenuPrincipal parentFrame) throws DataAccessException {
-        servproduit=new IsProduitImpl();
+        servproduit = new IsProduitImpl();
         try {
             setLayout(new BorderLayout());
             this.parent = parentFrame;
@@ -65,6 +65,7 @@ public class PannierPanel extends JPanel{
             nouveauBtn = new JButton("Nouveau");
             supprimerBtn = new JButton("Supprimer");
             modifierBtn = new JButton("Modifier");
+            imprimerBtn = new JButton("Imprimer");
             filtreBtn = new JButton("Filtrer");
             filtreBtn.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
@@ -114,7 +115,7 @@ public class PannierPanel extends JPanel{
             nouveauBtn.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
                     try {
-                        parent.setContenu(new NouveauProduitPanel(parent));
+                        parent.setContenu(new NouveauPannierPannel(parent));
                     } catch (DataAccessException ex) {
                         Logger.getLogger(ProduitPanel.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -125,7 +126,7 @@ public class PannierPanel extends JPanel{
                     int selected = clientTable.getSelectedRow();
                     if (selected >= 0) {
                         try {
-                            parent.setContenu(new NouveauProduitPanel(parent, (Long) tableModel.getValueAt(selected, 0)));
+                            parent.setContenu(new NouveauPannierPannel(parent, (Long) tableModel.getValueAt(selected, 0)));
                         } catch (DataAccessException ex) {
                             Logger.getLogger(ProduitPanel.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -158,9 +159,26 @@ public class PannierPanel extends JPanel{
                     }
                 }
             });
+
+            imprimerBtn.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    MessageFormat header = new MessageFormat("facture du client");
+                    MessageFormat footer = new MessageFormat("page no");
+                    try {
+                      //  tableModel.
+                        JTable jtab=new JTable(tableModel);
+                        jtab.print(JTable.PrintMode.NORMAL, header, footer);
+                    } catch (java.awt.print.PrinterException ec) {
+                        System.err.format("cannot print %s%n", ec.getMessage());
+                    }
+                  //  JOptionPane.showMessageDialog(null, "cette  fonctionnalité n'est pas encore operationnel");
+
+                }
+            });
             bas.add(nouveauBtn);
             bas.add(modifierBtn);
             bas.add(supprimerBtn);
+            bas.add(imprimerBtn);
             JPanel filtrePanel = new JPanel();
             filtrePanel.setLayout(new FlowLayout());
             filtrePanel.add(new JLabel("Nom"));
@@ -169,7 +187,7 @@ public class PannierPanel extends JPanel{
             filtrePanel.add(filtreBtn);
             contenu.add(BorderLayout.AFTER_LAST_LINE, bas);
             contenu.add(BorderLayout.BEFORE_FIRST_LINE, filtrePanel);
-            tableModel = new DefaultTableModel(new Object[]{"id", "Designation", "PU", "quantite","PT"}, 0);
+            tableModel = new DefaultTableModel(new Object[]{"id", "Designation", "PU", "quantite", "PT"}, 0);
             clientTable = new JTable(tableModel);
             clientTable.removeColumn(clientTable.getColumnModel().getColumn(0));
             contenu.add(BorderLayout.CENTER, new JScrollPane(clientTable));
@@ -183,18 +201,14 @@ public class PannierPanel extends JPanel{
                     p.getDesignation(),
                     p.getPU(),
                     p.getQuantite(),
-                    p.getPT(),
-               
-                 
-                });
+                    p.getPT(),});
 
             }
 
 
 
         } catch (Exception ex) {
-                  Logger.getLogger(PersonnelPanel.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PersonnelPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 }

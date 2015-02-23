@@ -16,5 +16,6 @@ import java.util.List;
 public interface Produitdao extends IDao<Produit, Long> {
     public Produit findbyName(String n)throws DataAccessException;
      public Produit findbyCode(String code)throws DataAccessException;
+      public Produit findbyPannierId(Long id)throws DataAccessException;
     List<Produit> findbyType(String t)throws DataAccessException;
 }

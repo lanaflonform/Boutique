@@ -128,19 +128,76 @@ public class IsProduitImpl extends GConfig implements IsProduit {
 
     public List<Pannier> findAllPannier() {
         try {
-           return pannierdao.findAll();
+            return pannierdao.findAll();
         } catch (DataAccessException ex) {
             Logger.getLogger(IsProduitImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
 
-    public void AjouterAuPannier(Pannier p) {
+    public void AjouterAuPannier(Pannier p, String codeP) {
         try {
+            Produit pr = produitdao.findbyCode(codeP);
+            p.setDesignation(pr.getDesignation());
+            p.setPU(pr.getPU());
+            p.setPT(pr.getPU() * p.getQuantite());
+            p.setProduit(pr);
             pannierdao.create(p);
             this.getTx().commit();
         } catch (DataAccessException ex) {
             Logger.getLogger(IsProduitImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public Pannier findPannierByID(Long id) {
+        try {
+            return pannierdao.findById(id);
+        } catch (DataAccessException ex) {
+            Logger.getLogger(IsProduitImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public Produit findByCodProd(String s) {
+        try {
+            return produitdao.findbyCode(s);
+        } catch (DataAccessException ex) {
+            return null;
+            //   Logger.getLogger(IsProduitImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void udpdatePannier(Pannier pan) {
+        try {
+            System.out.println("---------je met a jour à jour le pannier---------");
+            Produit prod=produitdao.findbyPannierId(pan.getId());
+            pan.setPU(prod.getPU());
+            pan.setPT(prod.getPU()*pan.getQuantite());
+            pan.setProduit(prod);
+            pan.setDesignation(prod.getDesignation());
+            pannierdao.update(pan);
+            this.getTx().commit();
+        } catch (DataAccessException ex) {
+            Logger.getLogger(IsProduitImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void DeletePannier(Long idPannier) {
+        try {
+            Pannier p = pannierdao.findById(idPannier);
+            pannierdao.delete(p);
+            this.getTx().commit();
+        } catch (DataAccessException ex) {
+            Logger.getLogger(IsProduitImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public Produit findByPannierID(Long idPannier) {
+        try {
+            return produitdao.findbyPannierId(idPannier);
+        } catch (DataAccessException ex) {
+            Logger.getLogger(IsProduitImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 }

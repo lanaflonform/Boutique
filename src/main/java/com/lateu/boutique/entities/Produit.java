@@ -31,7 +31,9 @@ import javax.persistence.Temporal;
     @NamedQuery(name = "findbyType", query = "select p from Produit p where (p.type=:type)"),
     @NamedQuery(name = "findbyCode", query = "select p from Produit p where (p.code=:code)"),
     @NamedQuery(name = "Produit.findByDesignation", query = "SELECT p FROM Produit p WHERE p.designation = :designation"),
-    @NamedQuery(name = "Produit.findByType", query = "SELECT p FROM Produit p WHERE p.type = :type")
+    @NamedQuery(name = "Produit.findByType", query = "SELECT p FROM Produit p WHERE p.type = :type"),
+    @NamedQuery(name = "Produit.findByPannierId", query = "SELECT p FROM Produit p, Pannier pan WHERE pan.produit.id =p.id AND pan.id=:id")
+
 })
 public class Produit implements Serializable {
 
